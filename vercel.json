@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/icon.png",
+      "destination": "https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
+    },
+    {
+      "source": "/((?!api/.*).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
