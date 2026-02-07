@@ -2,61 +2,92 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- ✅ Base Build Verification -->
+    <meta name="base:app_id" content="6987bc9173cda529e5cd668f" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- Favicons (Fixes 404 errors) -->
-    <link rel="icon" href="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png">
+    <link
+      rel="icon"
+      href="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
+      type="image/png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
+    />
 
     <!-- Primary Meta Tags -->
     <title>BaseFlow | On-Chain Reputation & Identity</title>
-    <meta name="title" content="BaseFlow | On-Chain Reputation & Identity">
-    <meta name="description" content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns.">
-    
+    <meta name="title" content="BaseFlow | On-Chain Reputation & Identity" />
+    <meta
+      name="description"
+      content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns."
+    />
+
     <!-- Open Graph / Facebook / Farcaster Preview -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://base-flow.vercel.app/">
-    <meta property="og:title" content="BaseFlow | On-Chain Reputation & Identity">
-    <meta property="og:description" content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns.">
-    <meta property="og:image" content="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://base-flow.vercel.app/" />
+    <meta property="og:title" content="BaseFlow | On-Chain Reputation & Identity" />
+    <meta
+      property="og:description"
+      content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns."
+    />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
+    />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://base-flow.vercel.app/">
-    <meta property="twitter:title" content="BaseFlow | On-Chain Reputation & Identity">
-    <meta property="twitter:description" content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns.">
-    <meta property="twitter:image" content="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png">
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://base-flow.vercel.app/" />
+    <meta property="twitter:title" content="BaseFlow | On-Chain Reputation & Identity" />
+    <meta
+      property="twitter:description"
+      content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns."
+    />
+    <meta
+      property="twitter:image"
+      content="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
+    />
 
     <link rel="manifest" href="/manifest.json" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <script>
       // Prevent crash if process is undefined in browser
-      window.process = { env: { NODE_ENV: 'production' } };
-      
+      window.process = { env: { NODE_ENV: "production" } };
+
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ["Inter", "sans-serif"],
             },
             colors: {
               base: {
-                blue: '#0052FF',
-                dark: '#0A0B0D',
-                gray: '#1E2025',
-                light: '#FFFFFF',
-                accent: '#212529'
-              }
-            }
-          }
-        }
-      }
+                blue: "#0052FF",
+                dark: "#0A0B0D",
+                gray: "#1E2025",
+                light: "#FFFFFF",
+                accent: "#212529",
+              },
+            },
+          },
+        },
+      };
     </script>
+
     <style>
       body {
-        background-color: #0A0B0D;
-        color: #FFFFFF;
+        background-color: #0a0b0d;
+        color: #ffffff;
       }
       .glass-panel {
         background: rgba(30, 32, 37, 0.7);
@@ -64,21 +95,23 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "recharts": "https://esm.sh/recharts@^3.7.0",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "@farcaster/frame-sdk": "https://esm.sh/@farcaster/frame-sdk@0.0.22"
-  }
-}
-</script>
-</head>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "recharts": "https://esm.sh/recharts@^3.7.0",
+          "react/": "https://esm.sh/react@^19.2.4/",
+          "react": "https://esm.sh/react@^19.2.4",
+          "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+          "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+          "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+          "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+          "@farcaster/frame-sdk": "https://esm.sh/@farcaster/frame-sdk@0.0.22"
+        }
+      }
+    </script>
+  </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
