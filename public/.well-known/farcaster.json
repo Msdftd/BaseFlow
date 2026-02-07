@@ -1,0 +1,18 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjMzMzU2OCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDI3YTc4QkM4MjQwMWM0N0QyMjg3ZjFhYjc0OTRCNEM4QTZDMzRlMUYifQ",
+    "payload": "eyJkb21haW4iOiJiYXNlLWZsb3cudmVyY2VsLmFwcCJ9",
+    "signature": "faOztiAWzBk9SfEGh47l79qqXDA1AnO9AURRjU/WGTccqxsEj5WA5oMyMp3lQnDzCUoQt5YG66Fr2PeF3akDuRs="
+  },
+  "frame": {
+    "version": "1",
+    "name": "BaseFlow",
+    "iconUrl": "https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png",
+    "homeUrl": "https://base-flow.vercel.app",
+    "imageUrl": "https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png",
+    "buttonTitle": "Check Reputation",
+    "splashImageUrl": "https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png",
+    "splashBackgroundColor": "#0A0B0D",
+    "webhookUrl": "https://base-flow.vercel.app/api/webhook"
+  }
+}
