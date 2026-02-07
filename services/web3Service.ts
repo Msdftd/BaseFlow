@@ -11,11 +11,56 @@ const hashString = (str: string): number => {
   return Math.abs(hash);
 };
 
-// 1. Connection Logic
+// Base Mainnet Configuration
+const BASE_CHAIN_ID = '0x2105'; // 8453 in hex
+const BASE_RPC_URL = 'https://mainnet.base.org';
+
+// 1. Connection Logic with Network Switching
 export const connectWallet = async (): Promise<string | null> => {
   if (typeof window !== 'undefined' && (window as any).ethereum) {
     try {
+      // 1. Request Accounts
       const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+      
+      // 2. Check Chain ID
+      const chainId = await (window as any).ethereum.request({ method: 'eth_chainId' });
+      
+      if (chainId !== BASE_CHAIN_ID) {
+        try {
+          // Attempt to switch to Base
+          await (window as any).ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: BASE_CHAIN_ID }],
+          });
+        } catch (switchError: any) {
+          // This error code indicates that the chain has not been added to MetaMask.
+          if (switchError.code === 4902) {
+            try {
+              await (window as any).ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainId: BASE_CHAIN_ID,
+                    chainName: 'Base Mainnet',
+                    nativeCurrency: {
+                      name: 'ETH',
+                      symbol: 'ETH',
+                      decimals: 18,
+                    },
+                    rpcUrls: [BASE_RPC_URL],
+                    blockExplorerUrls: ['https://basescan.org'],
+                  },
+                ],
+              });
+            } catch (addError) {
+              console.error("Failed to add Base network", addError);
+            }
+          } else {
+            console.error("Failed to switch network", switchError);
+          }
+        }
+      }
+
       return accounts[0];
     } catch (error) {
       console.error("User rejected connection", error);
