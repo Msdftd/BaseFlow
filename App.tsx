@@ -6,23 +6,10 @@ import { Dashboard } from './pages/Dashboard';
 import { Campaigns } from './pages/Campaigns';
 import { AdminDashboard } from './pages/Admin';
 import { ConnectModal } from './components/ConnectModal';
-import sdk from '@farcaster/frame-sdk';
 
 const App: React.FC = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
-
-  // Initialize Farcaster Frame SDK
-  useEffect(() => {
-    const initSDK = async () => {
-      try {
-        await sdk.actions.ready();
-      } catch (e) {
-        console.log("Farcaster SDK not in context");
-      }
-    };
-    initSDK();
-  }, []);
 
   // Check if wallet is already connected via localstorage persistence
   useEffect(() => {
