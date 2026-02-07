@@ -117,13 +117,18 @@ export const getWalletData = (address: string): { stats: WalletStats, score: Rep
   };
 };
 
+// Helper to calculate milestone
+const getNextMilestone = (streak: number) => {
+  return [1, 5, 10, 15, 30, 50, 100].find(m => m > streak) || 100;
+};
+
 // 3. Real Check-in Data Fetcher
 export const fetchCheckInStats = async (address: string) => {
   const STORAGE_KEY = `baseflow_streak_${address}`;
+  const NONCE_KEY = `baseflow_nonce_${address}`;
   
   try {
     // Attempt to fetch from the external mini-app API
-    // Adding timestamp to prevent caching
     const response = await fetch(`https://my-first-base-miniapp.vercel.app/api/streak?address=${address}&t=${Date.now()}`, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
@@ -131,22 +136,35 @@ export const fetchCheckInStats = async (address: string) => {
 
     if (response.ok) {
       const data = await response.json();
-      // Update local storage to match API for offline viewing later
-      localStorage.setItem(STORAGE_KEY, (data.streak || 0).toString());
       
-      return {
-        currentStreak: data.streak || 0,
-        totalCheckIns: data.total || 0,
-        nextMilestone: getNextMilestone(data.streak || 0)
-      };
+      // If API returns data > 0, trust it and save it
+      if (data.streak > 0) {
+        localStorage.setItem(STORAGE_KEY, data.streak.toString());
+        return {
+          currentStreak: data.streak,
+          totalCheckIns: data.total || data.streak,
+          nextMilestone: getNextMilestone(data.streak)
+        };
+      }
     }
   } catch (error) {
     // console.log("External fetch failed");
   }
 
-  // Fallback: Read from LocalStorage (Only used if API fails)
+  // Fallback: Read from LocalStorage (Handling the optimistic update)
   const savedData = localStorage.getItem(STORAGE_KEY);
   const currentStreak = savedData ? parseInt(savedData) : 0;
+  
+  // Store initial nonce if not present (to track future changes)
+  if (typeof window !== 'undefined' && (window as any).ethereum && !localStorage.getItem(NONCE_KEY)) {
+     try {
+         const nonce = await (window as any).ethereum.request({
+            method: 'eth_getTransactionCount',
+            params: [address, 'latest']
+         });
+         localStorage.setItem(NONCE_KEY, nonce);
+     } catch (e) {}
+  }
 
   return {
     currentStreak,
@@ -155,15 +173,53 @@ export const fetchCheckInStats = async (address: string) => {
   };
 };
 
-// Helper to calculate milestone
-const getNextMilestone = (streak: number) => {
-  return [1, 5, 10, 15, 30, 50, 100].find(m => m > streak) || 100;
-};
-
-// 4. Strict Verify Logic
+// 4. Smart Verify Logic
 export const verifyCheckIn = async (address: string) => {
-  // We simply re-fetch the stats. 
-  // We DO NOT manually increment local storage anymore.
-  // The external API must report the new streak.
-  return await fetchCheckInStats(address);
+  const STORAGE_KEY = `baseflow_streak_${address}`;
+  const NONCE_KEY = `baseflow_nonce_${address}`;
+  
+  // A. First, try the real API
+  const apiData = await fetchCheckInStats(address);
+  const localStreak = parseInt(localStorage.getItem(STORAGE_KEY) || '0');
+
+  // If API shows progress, return it immediately
+  if (apiData.currentStreak > localStreak) {
+    return apiData;
+  }
+
+  // B. If API is stale/slow, check ON-CHAIN evidence (Nonce increase)
+  // This is an "Optimistic Update" strategy
+  if (typeof window !== 'undefined' && (window as any).ethereum) {
+     try {
+         const currentNonceHex = await (window as any).ethereum.request({
+            method: 'eth_getTransactionCount',
+            params: [address, 'latest']
+         });
+         const currentNonce = parseInt(currentNonceHex, 16);
+         
+         const lastKnownNonceHex = localStorage.getItem(NONCE_KEY);
+         const lastKnownNonce = lastKnownNonceHex ? parseInt(lastKnownNonceHex, 16) : 0;
+
+         // If transaction count increased, user definitely did something on-chain
+         // Or if they have > 0 transactions and streak is 0, we can give them Day 1 credit
+         if (currentNonce > lastKnownNonce || (currentNonce > 0 && localStreak === 0)) {
+            
+            // Force update local state
+            const newStreak = localStreak + 1;
+            localStorage.setItem(STORAGE_KEY, newStreak.toString());
+            localStorage.setItem(NONCE_KEY, currentNonceHex); // Update known nonce
+            
+            return {
+                currentStreak: newStreak,
+                totalCheckIns: newStreak,
+                nextMilestone: getNextMilestone(newStreak)
+            };
+         }
+     } catch (e) {
+         console.error("On-chain verification failed", e);
+     }
+  }
+
+  // C. Default return if nothing detected
+  return apiData;
 };
