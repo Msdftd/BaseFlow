@@ -1,16 +1,3 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    rollupOptions: {
-      // Externalize dependencies that are loaded via importmap in index.html
-      // This prevents Rollup from failing when it can't find them in node_modules during build
-      external: [
-        '@farcaster/frame-sdk',
-      ],
-    }
-  }
-});
+// This file is deprecated. Please use vite.config.js instead.
+// We are using JS config to ensure compatibility with Vercel build environment without requiring ts-node.
+export default {};
