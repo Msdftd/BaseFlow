@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0052FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2B6FFF;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0.6" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg)" filter="url(#shadow)"/>
+  
+  <!-- Inner ring -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+  
+  <!-- Shield shape -->
+  <path d="M256 100 L370 160 L370 280 C370 340 320 390 256 420 C192 390 142 340 142 280 L142 160 Z" 
+        fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+  
+  <!-- Flow lines (3 curved lines representing data flow) -->
+  <path d="M200 200 Q256 180 312 220" fill="none" stroke="url(#flow)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M190 256 Q256 236 322 276" fill="none" stroke="url(#flow)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M200 312 Q256 292 312 332" fill="none" stroke="url(#flow)" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+  
+  <!-- Checkmark dot -->
+  <circle cx="320" cy="200" r="12" fill="#FFFFFF"/>
+  <path d="M314 200 L318 204 L326 196" fill="none" stroke="#0052FF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- BF Text -->
+  <text x="256" y="420" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif" font-size="28" font-weight="700" letter-spacing="6">BASEFLOW</text>
+</svg>
