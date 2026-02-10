@@ -4,6 +4,7 @@ import { Button } from '../components/Button';
 import { WalletStats, ReputationScore, AiAnalysisResult } from '../types';
 import { analyzeWalletReputation } from '../services/geminiService';
 import { getWalletData } from '../services/web3Service';
+import { getWalletDisplayInfo, generateAvatarGradient, formatDisplayAddress } from '../services/basenameService';
 import { Activity, Share2, Zap, AlertTriangle, CheckCircle, RefreshCw, Layers, Calendar, ExternalLink, Shield } from 'lucide-react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -19,21 +20,37 @@ export const Dashboard: React.FC<DashboardProps> = ({ isConnected, walletAddress
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // ✅ FIX: Basename resolution state
+  const [displayName, setDisplayName] = useState<string>('');
+  const [avatarGradient, setAvatarGradient] = useState<{ from: string; to: string }>({ from: '#0052FF', to: '#7B3FE4' });
+  const [isBasename, setIsBasename] = useState(false);
+
   // Load data when wallet connects or changes
   useEffect(() => {
     if (isConnected && walletAddress) {
         loadData();
+        resolveIdentity();
     }
   }, [isConnected, walletAddress]);
 
+  // ✅ FIX: Resolve basename for display
+  const resolveIdentity = async () => {
+    if (!walletAddress) return;
+    setDisplayName(formatDisplayAddress(walletAddress));
+    setAvatarGradient(generateAvatarGradient(walletAddress));
+
+    const info = await getWalletDisplayInfo(walletAddress);
+    setDisplayName(info.displayName);
+    setAvatarGradient(info.avatarGradient);
+    setIsBasename(info.isBasename);
+  };
+
   const loadData = () => {
     setIsRefreshing(true);
-    // Simulate network fetch
     setTimeout(() => {
         const data = getWalletData(walletAddress);
         setStats(data.stats);
         setScore(data.score);
-        // Reset analysis when wallet changes
         setAnalysis(null); 
         setIsRefreshing(false);
     }, 600);
@@ -53,7 +70,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ isConnected, walletAddress
     }
   };
 
-  // Helper for activity chart generation based on score
   const getActivityData = (scoreTotal: number) => {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return days.map((day, i) => ({
@@ -71,7 +87,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ isConnected, walletAddress
           </div>
           <h2 className="text-2xl font-bold">Connect Wallet to View Dashboard</h2>
           <p className="text-gray-400 max-w-md mx-auto">
-            Your on-chain reputation is waiting. Connect a wallet or simulate an address to see your BaseFlow Score.
+            Your on-chain reputation is waiting. Connect your wallet to see your BaseFlow Score.
           </p>
         </div>
       </div>
@@ -87,10 +103,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ isConnected, walletAddress
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-in slide-in-from-top-4 duration-500">
         <div>
             <h1 className="text-3xl font-bold text-white">Your Proof Profile</h1>
-            <p className="text-gray-400 flex items-center gap-2 mt-1">
+            {/* ✅ FIX: Show avatar + basename instead of raw 0x address */}
+            <div className="flex items-center gap-3 mt-2">
                 <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></span>
-                Tracking: <span className="font-mono text-gray-300">{walletAddress}</span>
-            </p>
+                <div 
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+                  style={{ background: `linear-gradient(135deg, ${avatarGradient.from}, ${avatarGradient.to})` }}
+                >
+                  {isBasename ? displayName.charAt(0).toUpperCase() : walletAddress.slice(2,4).toUpperCase()}
+                </div>
+                <span className="text-gray-400">
+                  Tracking: <span className="font-medium text-gray-200">{displayName}</span>
+                  {isBasename && (
+                    <span className="ml-2 text-xs text-gray-500 font-mono">({formatDisplayAddress(walletAddress)})</span>
+                  )}
+                </span>
+            </div>
         </div>
         <div className="flex gap-3">
              <Button variant="outline" size="sm" onClick={() => window.open(`https://basescan.org/address/${walletAddress}`, '_blank')}>
