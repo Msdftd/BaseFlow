@@ -8,16 +8,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Favicons (Fixes 404 errors) -->
-    <link
-      rel="icon"
-      href="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
-      type="image/png"
-    />
-    <link
-      rel="apple-touch-icon"
-      href="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
-    />
+    <!-- Favicons — ✅ FIX: Use custom logo instead of Base org logo -->
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/logo-512.png" />
 
     <!-- Primary Meta Tags -->
     <title>BaseFlow | On-Chain Reputation & Identity</title>
@@ -27,7 +20,7 @@
       content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns."
     />
 
-    <!-- Open Graph / Facebook / Farcaster Preview -->
+    <!-- Open Graph / Facebook / Social Preview -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://base-flow.vercel.app/" />
     <meta property="og:title" content="BaseFlow | On-Chain Reputation & Identity" />
@@ -35,10 +28,7 @@
       property="og:description"
       content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns."
     />
-    <meta
-      property="og:image"
-      content="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
-    />
+    <meta property="og:image" content="https://base-flow.vercel.app/promo-1002x548.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -48,10 +38,7 @@
       property="twitter:description"
       content="The premier reputation and user-proof platform for the Base ecosystem. Track your on-chain score, prove humanity, and unlock exclusive campaigns."
     />
-    <meta
-      property="twitter:image"
-      content="https://raw.githubusercontent.com/base-org/brand-kit/master/logo/symbol/Base_Symbol_Blue.png"
-    />
+    <meta property="twitter:image" content="https://base-flow.vercel.app/promo-1002x548.png" />
 
     <link rel="manifest" href="/manifest.json" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -61,7 +48,6 @@
     />
 
     <script>
-      // Prevent crash if process is undefined in browser
       window.process = { env: { NODE_ENV: "production" } };
 
       tailwind.config = {
@@ -96,6 +82,7 @@
       }
     </style>
 
+    <!-- ✅ FIX: Removed @farcaster/frame-sdk to make app client-agnostic -->
     <script type="importmap">
       {
         "imports": {
@@ -105,8 +92,7 @@
           "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
           "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
           "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
-          "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-          "@farcaster/frame-sdk": "https://esm.sh/@farcaster/frame-sdk@0.0.22"
+          "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
         }
       }
     </script>
