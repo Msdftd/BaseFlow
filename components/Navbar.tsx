@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './Button';
 import { Wallet, Menu, X, ShieldCheck, LogOut } from 'lucide-react';
+import { getWalletDisplayInfo, generateAvatarGradient, formatDisplayAddress } from '../services/basenameService';
 
 interface NavbarProps {
   isConnected: boolean;
@@ -14,8 +15,27 @@ export const Navbar: React.FC<NavbarProps> = ({ isConnected, onConnect, onDiscon
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
 
+  // ✅ FIX: Resolve basename instead of showing raw 0x
+  const [displayName, setDisplayName] = useState<string>('');
+  const [avatarGradient, setAvatarGradient] = useState<{ from: string; to: string }>({ from: '#0052FF', to: '#7B3FE4' });
+  const [isBasename, setIsBasename] = useState(false);
+
+  useEffect(() => {
+    if (walletAddress) {
+      // Set immediate fallback
+      setDisplayName(formatDisplayAddress(walletAddress));
+      setAvatarGradient(generateAvatarGradient(walletAddress));
+
+      // Resolve basename async
+      getWalletDisplayInfo(walletAddress).then((info) => {
+        setDisplayName(info.displayName);
+        setAvatarGradient(info.avatarGradient);
+        setIsBasename(info.isBasename);
+      });
+    }
+  }, [walletAddress]);
+
   const isActive = (path: string) => location.pathname === path ? "text-white" : "text-gray-400 hover:text-white";
-  const formatAddress = (addr: string) => `${addr.slice(0, 4)}...${addr.slice(-4)}`;
 
   return (
     <nav className="fixed top-0 w-full z-50 border-b border-white/10 bg-base-dark/80 backdrop-blur-md">
@@ -44,11 +64,23 @@ export const Navbar: React.FC<NavbarProps> = ({ isConnected, onConnect, onDiscon
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                   Base Mainnet
                 </div>
+                {/* ✅ FIX: Avatar + Basename display instead of raw 0x */}
                 <div className="flex items-center gap-2 bg-gray-800 rounded-lg p-1 pr-3 border border-gray-700">
-                    <div className="bg-gradient-to-tr from-blue-500 to-purple-600 w-8 h-8 rounded flex items-center justify-center text-xs font-bold">
-                        {walletAddress?.slice(2,4)}
+                    <div 
+                      className="w-8 h-8 rounded flex items-center justify-center text-xs font-bold text-white"
+                      style={{ background: `linear-gradient(135deg, ${avatarGradient.from}, ${avatarGradient.to})` }}
+                    >
+                        {isBasename 
+                          ? displayName.charAt(0).toUpperCase() 
+                          : (walletAddress?.slice(2,4).toUpperCase() || '?')
+                        }
                     </div>
-                    <span className="text-sm font-medium text-gray-200">{walletAddress ? formatAddress(walletAddress) : ''}</span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-gray-200 leading-tight">{displayName}</span>
+                      {isBasename && walletAddress && (
+                        <span className="text-[10px] text-gray-500 leading-tight">{formatDisplayAddress(walletAddress)}</span>
+                      )}
+                    </div>
                     <button onClick={onDisconnect} className="ml-2 text-gray-500 hover:text-red-400 transition-colors">
                         <LogOut className="w-4 h-4" />
                     </button>
@@ -73,6 +105,21 @@ export const Navbar: React.FC<NavbarProps> = ({ isConnected, onConnect, onDiscon
       {isMenuOpen && (
         <div className="md:hidden glass-panel border-t border-white/10">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+             {/* ✅ FIX: Show avatar + name in mobile menu too */}
+             {isConnected && walletAddress && (
+               <div className="flex items-center gap-3 px-3 py-3 mb-2 rounded-lg bg-white/5">
+                 <div 
+                   className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
+                   style={{ background: `linear-gradient(135deg, ${avatarGradient.from}, ${avatarGradient.to})` }}
+                 >
+                   {isBasename ? displayName.charAt(0).toUpperCase() : walletAddress.slice(2,4).toUpperCase()}
+                 </div>
+                 <div className="min-w-0">
+                   <div className="text-sm font-medium text-white truncate">{displayName}</div>
+                   {isBasename && <div className="text-xs text-gray-500 truncate">{formatDisplayAddress(walletAddress)}</div>}
+                 </div>
+               </div>
+             )}
              <Link to="/" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-white bg-white/5">Home</Link>
              <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5">Dashboard</Link>
              <Link to="/campaigns" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5">Campaigns</Link>
